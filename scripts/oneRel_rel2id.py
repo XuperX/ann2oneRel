@@ -3,8 +3,8 @@
 import os
 import json
 import shutil
+import argparse
 
-dirs = ['../data/corpus_v3/train', '../data/corpus_v3/dev', '../data/corpus_v3/test']
 
 def getRel2id(dirs):
     uniq_rels = []
@@ -25,10 +25,19 @@ def getRel2id(dirs):
     final = [id2rel, rel2id]
     return final
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--target_dir", type=str, help="The directory of the corpus")
+
+args = parser.parse_args()
+corpus_dir = args.target_dir
+dirs = [os.path.join(corpus_dir,'train'), os.path.join(corpus_dir,'dev'), os.path.join(corpus_dir,'test')]
+
 # move to the oneRel directory
 for corpus_dir in dirs:
-    which_file = corpus_dir.split("/")[-1]
-    oneRel_dir = "/Users/user/myPhD_code_git/20240106_oneRel_code/OneRel/Data/CorpusV3/"
-    shutil.copy(os.path.join(corpus_dir, "all_pub.json"), oneRel_dir+which_file + "_triples.json")
-    with open (os.path.join(oneRel_dir,"rel2id.json"), "w") as outfile:
+    dataset_dir = os.path.join("outputs/",corpus_dir.split("/")[-2])
+    os.makedirs(dataset_dir, exist_ok=True)
+    which_file = str(corpus_dir.split("/")[-1])
+    output_dir = "outputs/"+which_file
+    shutil.copy(os.path.join(corpus_dir, "all_pub.json"), os.path.join(dataset_dir,which_file + "_triples.json"))
+    with open(os.path.join(dataset_dir,"rel2id.json"), "w") as outfile:
         json.dump(getRel2id([corpus_dir]), outfile, indent=4)
