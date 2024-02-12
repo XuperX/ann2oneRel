@@ -1,3 +1,4 @@
 *.swp
 data/corpus3
 .idea
+*.log

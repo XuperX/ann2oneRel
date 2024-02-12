@@ -24,3 +24,11 @@ graph TB
 	> python3.8 -m pip install --no-use-pep517 pandas
 2. spacy package `en_core_sci_sm`
 	> pip install https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.3/en_core_sci_sm-0.5.3.tar.gz
+
+## Known issues:
+1. bug in the annotation configuration
+	e.g. `* PartOf T8 T7 T9` 
+	This is wrong because of incorrect configuration in BRAT. such files are ignored in the fire.
+2. some information in the ann files are not extracted. 
+	Usually these are caused either by bugs in the configuration files, or just some annotations. They only contribute to 1/100 of the annotations therefore, we can ignore them.
+3. in the inspectJson file the debug function and the log function do not work together properly. but it is not causing big issues. 
