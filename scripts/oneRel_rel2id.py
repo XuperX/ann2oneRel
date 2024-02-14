@@ -4,24 +4,25 @@ import os
 import json
 import shutil
 import argparse
+from print_color import print
 
-
-def getRel2id(dirs):
-    uniq_rels = []
-    for corpus_dir in dirs:
-        one_rel_aggregated_file = os.path.join(corpus_dir, "all_pub.json")
-
-
-        with open(one_rel_aggregated_file) as infile:
-            one_rel_aggregated = json.load(infile)
-        for one_sent in one_rel_aggregated:
-            for triple in one_sent["triple_list"]:
-                if triple[1] not in uniq_rels:
-                    uniq_rels.append(triple[1])
-
-    rel: object
-    id2rel = {str(i): rel for i, rel in enumerate(uniq_rels)}
-    rel2id = {rel: i for i, rel in enumerate(uniq_rels)}
+def getRel2id(output_dir):
+    unique_rels = []
+    for file in os.listdir(output_dir):
+        if file.endswith("_triples.json"):
+            with open(os.path.join(output_dir, file), "r") as f:
+                sents_obj = json.load(f)
+                for sent_obj in sents_obj:
+                    if len(sent_obj["triple_list"]) == 0:
+                        unique_rels.append("")
+                    else:
+                        for triple in sent_obj["triple_list"]:
+                            print(triple,color="red")
+                            if len(triple)>0:
+                                if triple[1] not in unique_rels:
+                                    unique_rels.append(triple[1])
+    id2rel = {str(i): rel for i, rel in enumerate(unique_rels)}
+    rel2id = {rel: i for i, rel in enumerate(unique_rels)}
     final = [id2rel, rel2id]
     return final
 
@@ -32,12 +33,18 @@ args = parser.parse_args()
 corpus_dir = args.target_dir
 dirs = [os.path.join(corpus_dir,'train'), os.path.join(corpus_dir,'dev'), os.path.join(corpus_dir,'test')]
 
-# move to the oneRel directory
+
 for corpus_dir in dirs:
     dataset_dir = os.path.join("outputs/",corpus_dir.split("/")[-2])
     os.makedirs(dataset_dir, exist_ok=True)
     which_file = str(corpus_dir.split("/")[-1])
     output_dir = "outputs/"+which_file
-    shutil.copy(os.path.join(corpus_dir, "all_pub.json"), os.path.join(dataset_dir,which_file + "_triples.json"))
-    with open(os.path.join(dataset_dir,"rel2id.json"), "w") as outfile:
-        json.dump(getRel2id([corpus_dir]), outfile, indent=4)
+    shutil.copy(os.path.join(corpus_dir, "all_triples.json"), os.path.join(dataset_dir,which_file + "_triples.json"))
+
+output_dir = "outputs/"+corpus_dir.split("/")[1]
+os.makedirs(output_dir, exist_ok=True)
+rel2id = getRel2id(output_dir)
+with open(os.path.join(output_dir, "rel2id.json"), "w") as f:
+    json.dump(rel2id, f, indent=4)
+
+

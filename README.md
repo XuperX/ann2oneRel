@@ -1,7 +1,9 @@
+## This script is ugly but does the job
 
 **TO RUN**
 ```
-bash run.sh data/NCBI-disease
+chmod +x run.sh
+./run.sh data/NCBI-disease True #true if need to include empty sentences.
 ```
 
 todo: the ncbi_disease set doesn't have term relationships, therefore it returns empty files. it only serves to demo the expected file structure.
