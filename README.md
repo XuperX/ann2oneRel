@@ -35,7 +35,6 @@ todo: the ncbi_disease set doesn't have term relationships, therefore it returns
 	The key point is to make sure the sentences are split in the same way as the original .txt file. Therefore, I chose to continue using the en_core_sci_sm model
 
 	here I used `en_core_sci_sm` within the scispacy package, which can be obtained from `https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.3/en_core_sci_sm-0.5.3.tar.gz` 
-2. **TODO sentences with no triples are not extracted**
 
 ## Known issues:
 1. bug in the annotation configuration
